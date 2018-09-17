@@ -124,8 +124,21 @@
                         var options = {
                             sc_formmode: "edit"
                         };
-						
-						
+
+                        //remove duplicates from serach results(versions of the same item). 249267                       
+                        var list = [];
+                        for (var i = 0; i < this.DataSource.Items.length; ++i) {
+                            if (!list.find(function (element) {
+                                return element.$itemId === this.$itemId;
+                            }, this.DataSource.Items[i])) {
+                                list.push(this.DataSource.Items[i]);
+                            }
+                        }
+
+                        this.DataSource.off("change:Items", this.dataSourceItemsChanged, this);
+                        this.DataSource.Items = list;
+                        this.DataSource.on("change:Items", this.dataSourceItemsChanged, this);						
+
                         var baseUrl = speak.Helpers.url.addQueryParameters(formDesignerUrl, options);
                         this.DataSource.Items.forEach(function(item) {
                             item.$url = speak.Helpers.url.addQueryParameters(baseUrl, { formId: item.$itemId });
@@ -335,7 +348,8 @@
                     if (itemId && itemId.length) {
                         var options = {
                             formId: itemId,
-                            sc_formmode: "edit"
+                            sc_formmode: "edit",
+                            la: selectedItems[0].$language //pass language of the selected form 249267
                         };
                         this.openFormDesigner(options);
                     }

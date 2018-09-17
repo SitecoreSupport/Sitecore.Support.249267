@@ -53,8 +53,10 @@
                 this.defineProperty("SelectedItem", null);
                 this.defineProperty("HasChanged", false);
                 this.defineComputedProperty("CurrentLanguage", function () {
-					
-                    return this.FormModel ? this.FormModel.currentLanguage : "";
+                    //read language 249267
+                    let urlParams = new URLSearchParams(window.location.search);
+                    let lang = urlParams.get('la');
+                    return this.FormModel ? this.FormModel.currentLanguage : lang;
                 });
 
                 this.$el = $(this.el);
